@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from typing import Union
+from youtube_transcript_api import YouTubeTranscriptApi
 
 app = FastAPI()
 
@@ -7,24 +8,17 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-
 @app.get("/ytid/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
+def read_item(item_id: str):
 
     #processes youtube transcript from id
-   
-    #return transcript string
+    print("Get Transcript")
+    data = YouTubeTranscriptApi.get_transcript("M6DNOpQcCjs")
 
-    #testing
+    transcriptText = ""
 
-    speak = "I have nothing to say"
+    #Extract transcript text
+    for item in data:
+        transcriptText = transcriptText + " " + item["text"]
 
-
-    if item_id < 10:
-        speak = "Item is less than 10"
-    if item_id >= 10 and item_id < 20:
-        speak = "Item is between 10 and 20"
-    if item_id >= 20:
-        speak = "item is 20 or over"
-
-    return {"item_id": item_id, "output": speak}
+    return {"item_id": item_id, "transcript": transcriptText}
